@@ -1,0 +1,2 @@
+# cpp.stack
+Dynamic stack.
