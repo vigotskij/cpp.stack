@@ -28,7 +28,7 @@ class DStack: public IStack<ItemType> {
 
 		Node *top ;
 
-		size usedSpaces ;
+		Size usedSpaces ;
 
 		// copy constructor ;
 		DStack(const DStack &stack ) ;
@@ -45,13 +45,81 @@ class DStack: public IStack<ItemType> {
 		virtual ItemType pop( void ) ;
 		virtual ItemType peek( void ) ;
 		virtual bool isEmpty( void ) ;
-		virtual size stackSize( void ) ;
-		virtual bool release( void ) ;
-		//
-		virtual bool appendRef( void ) ;
-   		virtual bool delRef( void ) ;
+		virtual Size stackSize( void ) ;
 };
 
+//
+// PRIVATE
+//
+
+//
+// PUBLIC
+//
+template <class ItemType>
+DStack<ItemType>::DStack( void ) {
+	top = nullptr ;
+	usedSpaces = 0 ;
+}
+template <class ItemType>
+DStack<ItemType>::~DStack( void ) {
+	while ( top != nullptr ) {
+		usedSpaces-- ;
+		Node *oldTop = top ;
+		top = oldTop->next ;
+
+		delete oldTop ;
+	}
+	if( top ) delete top ;
+}
+
+template <class ItemType>
+void DStack<ItemType>::push( ItemType value ) {
+	Node *newNode ;
+	newNode = new Node() ;
+
+	newNode->value = value ;
+
+	Node *oldTop ;
+	oldTop = top ;
+	top = newNode ;
+	top->next = oldTop ;
+
+	usedSpaces++ ;
+}
+template <class ItemType>
+ItemType DStack<ItemType>::pop( void ) {
+	ItemType toReturn = NULL ;
+
+	if( top != nullptr ) {
+		usedSpaces-- ;
+
+		Node *oldTop = top ;
+		top = oldTop->next ;
+
+		toReturn = oldTop->value ;
+
+		delete oldTop ;
+	}
+
+	return toReturn ;
+}
+template <class ItemType>
+ItemType DStack<ItemType>::peek( void ) {
+	return top->value ;
+}
+
+template <class ItemType>
+bool DStack<ItemType>::isEmpty( void ) {
+	return ( usedSpaces == 0 ) ;
+}
+template <class ItemType>
+Size DStack<ItemType>::stackSize( void ) {
+	return usedSpaces ;
+}
+
+//
+// FACTORY
+//
 template <class ItemType>
 IStack<ItemType>* factoryStack( void ) {
 	return new DStack<ItemType> ;
